@@ -2,11 +2,10 @@
 let cart = [];
 let products = []; // Array global para produtos
 
-// Seleciona os elementos do HTML
+// Seleciona os elementos do HTML (garantindo que existam)
 const productGrid = document.getElementById('product-grid');
 const cartItemsList = document.getElementById('cart-items');
 const cartTotalSpan = document.getElementById('cart-total');
-const cartCountSpan = document.getElementById('cart-count');
 const cartDrawer = document.getElementById('cart-drawer');
 const toast = document.getElementById('toast');
 
@@ -67,18 +66,28 @@ function loadCart() {
     }
 }
 
-// Função para atualizar todos os contadores do carrinho
+// Função para atualizar todos os contadores do carrinho no navbar e no drawer
 function updateCartCounters() {
     const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Atualiza todos os elementos de contagem
+    // Atualiza todos os elementos com a classe .cart-count (nos navbars)
     document.querySelectorAll('.cart-count').forEach(element => {
         element.textContent = totalCount;
     });
     
-    if (cartCountSpan) cartCountSpan.textContent = `(${totalCount})`;
+    // Atualiza o contador dentro do próprio carrinho (se existir)
+    const cartDrawerCountSpan = document.querySelector('#cart-drawer #cart-count');
+    if (cartDrawerCountSpan) cartDrawerCountSpan.textContent = `(${totalCount})`;
+    
+    // Atualiza o total do carrinho
     if (cartTotalSpan) cartTotalSpan.textContent = totalPrice.toFixed(2).replace('.', ',');
+
+    // Desabilita o botão de finalizar compra se o carrinho estiver vazio
+    const checkoutButton = document.querySelector('.checkout-button');
+    if (checkoutButton) {
+        checkoutButton.disabled = totalCount === 0;
+    }
 }
 
 // Função para testar a conexão com a API
@@ -117,7 +126,6 @@ async function fetchAndRenderProducts() {
             console.log('Produtos carregados da API:', products);
             showToast('Produtos carregados com sucesso!');
         } else {
-            // Usar fallback se API não estiver disponível
             console.log('Usando produtos fallback');
             products = fallbackProducts;
             showToast('Modo offline - produtos de demonstração', 'error');
@@ -128,7 +136,6 @@ async function fetchAndRenderProducts() {
     } catch (error) {
         console.error('Erro ao buscar os produtos:', error);
         
-        // Usar fallback em caso de erro
         products = fallbackProducts;
         renderProducts(products);
         
@@ -165,7 +172,6 @@ function renderProducts(productsToRender) {
         productGrid.appendChild(productCard);
     });
 
-    // Adiciona evento a cada botão após renderizar os produtos
     document.querySelectorAll('.add-to-cart-button').forEach(button => {
         button.addEventListener('click', (event) => {
             const productId = Number(event.target.dataset.id);
@@ -200,7 +206,6 @@ function addToCart(product) {
     saveCart();
     showToast(`${product.name} adicionado ao carrinho!`);
     
-    // Abre o carrinho automaticamente
     if (cartDrawer && !cartDrawer.classList.contains('open')) {
         openCart();
     }
@@ -287,26 +292,46 @@ function checkout() {
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     showToast(`Compra finalizada! Total: R$ ${total.toFixed(2).replace('.', ',')}`);
     
-    // Limpar carrinho após compra
     cart = [];
     renderCart();
     saveCart();
     closeCart();
 }
 
+// LÓGICA DE FADE-IN
+function setupFadeInObserver() {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    fadeInElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
 // Inicializa a página
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Página carregada, inicializando...');
     
-    // Carrega dados iniciais
     loadCart();
     
-    // Só busca produtos se estiver na página de produtos
     if (window.location.pathname.includes('compra.html') || productGrid) {
         fetchAndRenderProducts();
     }
     
-    // Event listeners para carrinho
     document.querySelectorAll('.cart-btn').forEach(btn => {
         btn.addEventListener('click', openCart);
     });
@@ -319,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.checkout-button').addEventListener('click', checkout);
     }
     
-    // Fechar carrinho ao clicar fora
     document.addEventListener('click', (event) => {
         if (cartDrawer && cartDrawer.classList.contains('open') && 
             !event.target.closest('.cart-section') && 
@@ -327,12 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
             closeCart();
         }
     });
+
+    // Inicia a observação para o efeito de fade-in
+    setupFadeInObserver();
     
     console.log('Inicialização concluída');
 });
 
 // Torna funções globais para uso nos eventos HTML
-window.openCart = openCart;
-window.closeCart = closeCart;
+window.addToCart = addToCart;
 window.updateQuantity = updateQuantity;
 window.removeFromCart = removeFromCart;
