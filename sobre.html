@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós - Lavtec Industrial</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container navbar">
+            <a class="logo" href="index.html">Lavtec <span>Industrial</span></a>
+            <nav class="nav" aria-label="Navegação principal">
+                <ul id="primary-navigation" class="nav-links">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="sobre.html" class="active">Sobre Nós</a></li>
+                    <li><a href="compra.html">Produtos</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="cart-btn" aria-label="Abrir carrinho">
+                    <svg class="icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M7 4h-2l-1 2h2l2 9h9l2-8H9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    <span class="cart-count" id="nav-cart-count-3">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <section class="about-section container">
+            <h2>Nossa História e Missão</h2>
+            <div class="about-grid">
+                <div>
+                    <p>A Lavtec Industrial nasceu com o propósito de revolucionar o setor de higienização de utensílios em cozinhas e indústrias. Desde o nosso início, nossa missão é fornecer equipamentos de alta performance que combinam eficiência, durabilidade e sustentabilidade.</p>
+                    <p>Nossos produtos são desenvolvidos com tecnologia de ponta, visando não apenas a limpeza impecável, mas também a economia de água e energia. Acreditamos que a qualidade de nossos equipamentos se reflete diretamente na qualidade da sua operação.</p>
+                </div>
+                <div>
+                    <h3>Nossos Valores</h3>
+                    <ul>
+                        <li>Inovação</li>
+                        <li>Qualidade</li>
+                        <li>Sustentabilidade</li>
+                        <li>Parceria</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">&copy; 2025 Lavtec Industrial. Todos os direitos reservados.</div>
+    </footer>
+
+    <!-- Carrinho -->
+    <aside class="cart-section" id="cart-drawer" aria-live="polite">
+        <div class="cart-header">
+            <h3>Carrinho <span id="cart-count">(0)</span></h3>
+            <button class="close-cart" aria-label="Fechar carrinho">✕</button>
+        </div>
+        <ul id="cart-items"></ul>
+        <div class="cart-footer">
+            <div class="cart-total">Total: R$ <span id="cart-total">0,00</span></div>
+            <button class="checkout-button">Finalizar Compra</button>
+        </div>
+    </aside>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
