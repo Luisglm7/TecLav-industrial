@@ -5,14 +5,14 @@ app = Flask(__name__)
 # CORS mais permissivo para desenvolvimento
 CORS(app)
 
-# Dados dos produtos - APENAS 1 PRODUTO
+# Dados dos produtos - ATUALIZADO PARA LAV SMARTCLEAN 2.1
 products = [
     {
         'id': 1,
         'name': 'Lav SmartClean 2.1',
-        'description': 'Ideal para industrias de pequeno a grande porte.',
+        'description': 'Ideal para indústrias de pequeno a grande porte.',
         'price': 30000.00,
-        'image': 'https://via.placeholder.com/300x200?text=Modelo+P-50'
+        'image': 'https://via.placeholder.com/300x200?text=Lav+SmartClean+2.1'
     }
 ]
 

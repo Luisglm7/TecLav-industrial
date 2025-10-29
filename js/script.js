@@ -9,14 +9,14 @@ const cartTotalSpan = document.getElementById('cart-total');
 const cartDrawer = document.getElementById('cart-drawer');
 const toast = document.getElementById('toast');
 
-// Dados de fallback caso a API não funcione - APENAS 1 PRODUTO
+// Dados de fallback caso a API não funcione - ATUALIZADO
 const fallbackProducts = [
     {
         id: 1,
         name: 'Lav SmartClean 2.1',
-        description: 'Ideal para industrias de pequeno a grande porte.',
+        description: 'Ideal para indústrias de pequeno a grande porte.',
         price: 30000.00,
-        image: 'https://via.placeholder.com/300x200?text=Modelo+P-50'
+        image: 'https://via.placeholder.com/300x200?text=Lav+SmartClean+2.1'
     }
 ];
 
@@ -130,7 +130,7 @@ async function fetchAndRenderProducts() {
     }
 }
 
-// Função para renderizar os produtos na página (AJUSTADA PARA CARD ÚNICO)
+// Função para renderizar os produtos na página (AJUSTADA PARA CARD ÚNICO SEM BOTÃO DE ORÇAMENTO)
 function renderProducts(productsToRender) {
     if (!productGrid) return;
     
@@ -143,7 +143,7 @@ function renderProducts(productsToRender) {
     
     console.log('Renderizando produto único:', product);
     
-    // Renderiza o card aprimorado
+    // Renderiza o card aprimorado (SEM O BOTÃO 'SOLICITAR ORÇAMENTO')
     productGrid.innerHTML = `
         <div class="product-card">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -153,25 +153,26 @@ function renderProducts(productsToRender) {
             <button class="add-to-cart-button cta-button" data-id="${product.id}">
                 Adicionar ao Carrinho
             </button>
-            <a href="#contato" class="ghost-button">Solicitar Orçamento Personalizado</a>
         </div>
     `;
 
-    // Adiciona evento ao novo botão
+    // Adiciona evento ao botão "Adicionar ao Carrinho"
     const button = productGrid.querySelector('.add-to-cart-button');
-    button.addEventListener('click', (event) => {
-        const productId = Number(event.target.dataset.id);
-        const product = productsToRender.find(p => Number(p.id) === productId);
-        if (product) {
-            addToCart(product);
-            event.target.disabled = true;
-            event.target.textContent = 'Adicionado!';
-            setTimeout(() => {
-                event.target.disabled = false;
-                event.target.textContent = 'Adicionar ao Carrinho';
-            }, 2000);
-        }
-    });
+    if (button) { // Verifica se o botão existe antes de adicionar o evento
+        button.addEventListener('click', (event) => {
+            const productId = Number(event.target.dataset.id);
+            const product = productsToRender.find(p => Number(p.id) === productId);
+            if (product) {
+                addToCart(product);
+                event.target.disabled = true;
+                event.target.textContent = 'Adicionado!';
+                setTimeout(() => {
+                    event.target.disabled = false;
+                    event.target.textContent = 'Adicionar ao Carrinho';
+                }, 2000);
+            }
+        });
+    }
 }
 
 // Função para adicionar um produto ao carrinho
