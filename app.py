@@ -11,17 +11,9 @@ products = [
         'id': 1,
         'name': 'Lava-louças industrial P-50',
         'description': 'Ideal para cozinhas de pequeno e médio porte.',
-        'price': 8500.00,
+        'price': 30000.00,
         'image': 'https://via.placeholder.com/300x200?text=Modelo+P-50'
     },
-    {
-        'id': 2,
-        'name': 'Lava-louças industrial M-100',
-        'description': 'Alta capacidade para restaurantes de grande fluxo.',
-        'price': 15200.00,
-        'image': 'https://via.placeholder.com/300x200?text=Modelo+M-100'
-    },
-
 ]
 
 @app.route('/api/products', methods=['GET'])
