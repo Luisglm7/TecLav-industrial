@@ -21,13 +21,7 @@ products = [
         'price': 15200.00,
         'image': 'https://via.placeholder.com/300x200?text=Modelo+M-100'
     },
-    {
-        'id': 3,
-        'name': 'Lava-louças industrial G-200',
-        'description': 'Potência máxima para linhas de produção industrial.',
-        'price': 28900.00,
-        'image': 'https://via.placeholder.com/300x200?text=Modelo+G-200'
-    }
+
 ]
 
 @app.route('/api/products', methods=['GET'])
