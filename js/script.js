@@ -9,12 +9,12 @@ const cartTotalSpan = document.getElementById('cart-total');
 const cartDrawer = document.getElementById('cart-drawer');
 const toast = document.getElementById('toast');
 
-// Dados de fallback caso a API não funcione
+// Dados de fallback caso a API não funcione - APENAS 1 PRODUTO
 const fallbackProducts = [
     {
         id: 1,
-        name: 'Lava-louças industrial P-50',
-        description: 'Ideal para cozinhas de pequeno e médio porte.',
+        name: 'Lav SmartClean 2.1',
+        description: 'Ideal para industrias de pequeno a grande porte.',
         price: 30000.00,
         image: 'https://via.placeholder.com/300x200?text=Modelo+P-50'
     }
@@ -130,48 +130,47 @@ async function fetchAndRenderProducts() {
     }
 }
 
-// Função para renderizar os produtos na página
+// Função para renderizar os produtos na página (AJUSTADA PARA CARD ÚNICO)
 function renderProducts(productsToRender) {
     if (!productGrid) return;
     
-    productGrid.innerHTML = '';
+    const product = productsToRender[0];
     
-    if (!productsToRender || productsToRender.length === 0) {
+    if (!product) {
         productGrid.innerHTML = '<p class="empty-state">Nenhum produto disponível no momento.</p>';
         return;
     }
     
-    console.log('Renderizando produtos:', productsToRender);
+    console.log('Renderizando produto único:', product);
     
-    productsToRender.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card';
-        productCard.innerHTML = `
+    // Renderiza o card aprimorado
+    productGrid.innerHTML = `
+        <div class="product-card">
             <img src="${product.image}" alt="${product.name}" loading="lazy">
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p class="price">R$ ${Number(product.price).toFixed(2).replace('.', ',')}</p>
-            <button class="add-to-cart-button" data-id="${product.id}">
+            <h3 class="product-title">${product.name}</h3>
+            <p class="product-description">${product.description}</p>
+            <p class="price-display">R$ ${Number(product.price).toFixed(2).replace('.', ',')}</p>
+            <button class="add-to-cart-button cta-button" data-id="${product.id}">
                 Adicionar ao Carrinho
             </button>
-        `;
-        productGrid.appendChild(productCard);
-    });
+            <a href="#contato" class="ghost-button">Solicitar Orçamento Personalizado</a>
+        </div>
+    `;
 
-    document.querySelectorAll('.add-to-cart-button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const productId = Number(event.target.dataset.id);
-            const product = productsToRender.find(p => Number(p.id) === productId);
-            if (product) {
-                addToCart(product);
-                event.target.disabled = true;
-                event.target.textContent = 'Adicionado!';
-                setTimeout(() => {
-                    event.target.disabled = false;
-                    event.target.textContent = 'Adicionar ao Carrinho';
-                }, 2000);
-            }
-        });
+    // Adiciona evento ao novo botão
+    const button = productGrid.querySelector('.add-to-cart-button');
+    button.addEventListener('click', (event) => {
+        const productId = Number(event.target.dataset.id);
+        const product = productsToRender.find(p => Number(p.id) === productId);
+        if (product) {
+            addToCart(product);
+            event.target.disabled = true;
+            event.target.textContent = 'Adicionado!';
+            setTimeout(() => {
+                event.target.disabled = false;
+                event.target.textContent = 'Adicionar ao Carrinho';
+            }, 2000);
+        }
     });
 }
 

@@ -234,12 +234,102 @@ body {
     margin-right: 0.5rem;
 }
 
-/* ---------- Product Grid ---------- */
+/* --- ESTILOS ESPECÍFICOS PARA COMPRA.HTML (Layout de Detalhes) --- */
+
+.product-details-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 para o texto, 1/3 para o card */
+    gap: 3rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+}
+
+/* LADO ESQUERDO: Descrição e Processo */
+.product-info h3 {
+    color: var(--accent);
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid rgba(0, 113, 227, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.product-info p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.process-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+}
+
+.process-list li {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.process-list h4 {
+    color: #111827;
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.process-list p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* LADO DIREITO: Card Único */
+.details-card {
+    position: sticky; /* Card fica fixo ao rolar a página */
+    top: 6rem; /* Distância do topo */
+    padding: 1rem;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.single-product-grid .product-card {
+    /* Remove a borda e padding do card interno para usar o do .details-card */
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    transition: none;
+    transform: none;
+}
+
+.single-product-grid .product-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.product-card .price-display {
+    font-size: 2rem; /* Preço maior e destacado */
+    font-weight: 800;
+    color: var(--accent);
+    margin: 1rem 0 1.5rem;
+}
+
+/* Garante que os botões do card único tenham espaço */
+.single-product-grid .cta-button, .single-product-grid .ghost-button {
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+
+/* ---------- Product Grid (Original, caso seja necessário) ---------- */
 .products-section {
     padding: 2rem 0 4rem;
 }
 .product-grid {
-    display: grid;
+    /* Esta regra é para grids de múltiplos produtos (neste projeto, não é mais usada) */
+    display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.25rem;
 }
@@ -250,10 +340,6 @@ body {
     border: 1px solid rgba(0,0,0,0.08);
     transition: transform .25s ease, box-shadow .25s ease;
     position: relative;
-}
-.product-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 16px 30px rgba(0,0,0,0.08);
 }
 .product-card img {
     width: 100%;
@@ -290,28 +376,14 @@ body {
     transition: transform .16s ease;
     width: 100%;
 }
-.add-to-cart-button:hover {
-    transform: translateY(-3px);
-}
-.add-to-cart-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
 
-/* ---------- Loading States ---------- */
+/* ---------- Loading States e Carrinho (Toast) ---------- */
 .loading-state {
     text-align: center;
     padding: 2rem;
     color: #6b7280;
     font-style: italic;
 }
-.loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-/* ---------- Cart Drawer ---------- */
 .cart-section {
     position: fixed;
     right: 20px;
@@ -332,119 +404,6 @@ body {
     transform: translateX(0);
     opacity: 1;
 }
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-}
-.cart-footer {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-.cart-total {
-    text-align: right;
-    font-weight: 700;
-    color: #111827;
-    font-size: 1.1rem;
-}
-.close-cart {
-    background: transparent;
-    border: none;
-    color: #6b7280;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-.close-cart:hover {
-    color: var(--accent);
-}
-#cart-items {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 40vh;
-    overflow: auto;
-}
-#cart-items li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.65rem 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-}
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-.cart-item-info {
-    flex: 1;
-}
-.cart-item-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.quantity-btn {
-    background: var(--accent);
-    border: none;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-}
-.quantity-btn:hover {
-    background: var(--accent-2);
-}
-.remove-item {
-    background: transparent;
-    border: none;
-    color: #ef4444;
-    cursor: pointer;
-    font-size: 0.8rem;
-    padding: 0.25rem;
-    margin-left: 0.5rem;
-}
-.remove-item:hover {
-    color: #dc2626;
-}
-.empty-cart-message {
-    text-align: center;
-    color: #6b7280;
-    font-style: italic;
-    padding: 2rem 0;
-}
-.checkout-button {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
-    padding: 0.9rem;
-    border-radius: 10px;
-    border: none;
-    font-weight: 800;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-.checkout-button:hover {
-    transform: translateY(-2px);
-}
-.checkout-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-}
-
-/* ---------- Toast ---------- */
 .toast {
     position: fixed;
     left: 50%;
@@ -470,17 +429,6 @@ body {
 .toast.error {
     background: var(--error);
 }
-
-/* ---------- Footer ---------- */
-.footer {
-    padding: 2rem 0;
-    text-align: center;
-    color: #6b7280;
-    border-top: 1px solid rgba(0,0,0,0.08);
-    margin-top: 3rem;
-    background: var(--bg);
-}
-
 /* --- Efeito de Animação de Entrada --- */
 .fade-in {
     opacity: 0;
@@ -495,12 +443,10 @@ body {
 
 /* ---------- Responsividade ---------- */
 
-/* Ajustes para telas médias (tablets em modo paisagem, laptops pequenos) */
 @media (max-width: 980px) {
     .container {
         padding: 0 1.5rem;
     }
-
     .hero-inner {
         grid-template-columns: 1fr;
         text-align: center;
@@ -523,13 +469,11 @@ body {
         max-width: 80%;
         margin: 0 auto;
     }
-
     .features {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
         margin: 2rem auto 3rem;
     }
-
     .about-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -541,30 +485,19 @@ body {
     .about-grid h3 {
         font-size: 1.3rem;
     }
-
-    .product-grid {
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    .product-details-section {
+        grid-template-columns: 1fr; /* Empilha as colunas */
     }
-
-    .cart-section {
-        right: 15px;
-        top: 15vh;
-        width: 320px;
-    }
-
-    .footer {
-        margin-top: 2rem;
-        padding: 1.5rem 0;
+    .details-card {
+        position: static; /* Remove sticky */
+        order: -1; /* Coloca o card do produto acima da descrição no mobile */
     }
 }
 
-/* Ajustes para telas pequenas (smartphones) */
 @media (max-width: 720px) {
     .container {
         padding: 0 0.8rem;
     }
-
-    /* Navbar para mobile: */
     .navbar {
         flex-wrap: wrap;
         justify-content: center;
@@ -580,31 +513,13 @@ body {
         display: flex !important;
         position: static;
         flex-direction: row;
-        background: transparent;
-        border-top: none;
-        padding: 0;
-        box-shadow: none;
         gap: 0.6rem;
         width: 100%;
         justify-content: center;
         margin-top: 0.5rem;
     }
-    .nav-links a {
-        font-size: 0.85rem;
-        padding: 0.3rem 0.5rem;
-    }
-    .cart-btn {
-        padding: 0.4rem 0.5rem;
-    }
-
-    .hero-section {
-        padding: 2rem 0;
-    }
     .hero-left h1 {
         font-size: 1.8rem;
-    }
-    .hero-left p {
-        font-size: 0.9rem;
     }
     .hero-ctas {
         flex-direction: column;
@@ -612,69 +527,22 @@ body {
     }
     .cta-button, .ghost-button {
         width: 100%;
-        text-align: center;
-        padding: 0.8rem 1rem;
     }
-    .hero-right {
-        max-width: 90%;
-    }
-
     .features {
         grid-template-columns: 1fr;
         gap: 1rem;
-        margin: 1.5rem auto 2rem;
-    }
-
-    .about-section {
-        padding: 2.5rem 0;
-    }
-    .about-grid h2 {
-        font-size: 1.6rem;
-        margin-bottom: 1rem;
-    }
-    .about-grid h3 {
-        font-size: 1.2rem;
-    }
-
-    .products-section {
-        padding: 1.5rem 0 3rem;
     }
     .product-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
     }
-    .product-card {
-        padding: 0.8rem;
-    }
-    .product-card h3 {
-        font-size: 1rem;
-    }
-    .product-card p {
-        font-size: 0.85rem;
-    }
-    .price {
-        font-size: 0.95rem;
-    }
-    .add-to-cart-button {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
-    }
-
     .cart-section {
         right: 50%;
         transform: translateX(50%);
         top: auto;
         bottom: 15px;
         width: 95%;
-        max-height: 70vh;
     }
     .cart-section.open {
         transform: translateX(-50%);
-    }
-
-    .footer {
-        margin-top: 1.5rem;
-        padding: 1rem 0;
-        font-size: 0.8rem;
     }
 }

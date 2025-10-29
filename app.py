@@ -5,15 +5,15 @@ app = Flask(__name__)
 # CORS mais permissivo para desenvolvimento
 CORS(app)
 
-# Dados dos produtos
+# Dados dos produtos - APENAS 1 PRODUTO
 products = [
     {
         'id': 1,
-        'name': 'Lava-louças industrial P-50',
-        'description': 'Ideal para cozinhas de pequeno e médio porte.',
+        'name': 'Lav SmartClean 2.1',
+        'description': 'Ideal para industrias de pequeno a grande porte.',
         'price': 30000.00,
         'image': 'https://via.placeholder.com/300x200?text=Modelo+P-50'
-    },
+    }
 ]
 
 @app.route('/api/products', methods=['GET'])
