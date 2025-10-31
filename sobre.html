@@ -7,6 +7,27 @@
     <link rel="stylesheet" href="css/style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
+<div id="chatbot-toggle">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+        </svg>
+    </div>
+
+    <div id="chatbot-window">
+        <div class="chat-header">
+            Assistente Lavtec
+        </div>
+        <div id="chatbot-messages" class="chat-messages">
+            </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatbot-input" placeholder="Pergunte sobre etapas, preço, etc.">
+            <button id="chatbot-send-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M2.01 21L23 12 2.01 3v6l15 3-15 3z"/></svg>
+            </button>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="js/chatbot.js"></script> </body>
 <body>
     <header class="header">
         <div class="container navbar">
