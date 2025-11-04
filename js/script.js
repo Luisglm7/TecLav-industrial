@@ -319,39 +319,47 @@ const chatButton = document.getElementById('chatbot-send-btn');
 const botToggle = document.getElementById('chatbot-toggle');
 const botWindow = document.getElementById('chatbot-window');
 
-// Base de Conhecimento do Chatbot
+// Base de Conhecimento do Chatbot (Regras/Intenções) - ATUALIZADA
 const knowledgeBase = [
     {
-        keywords: ['oi', 'ola', 'olá', 'saudacao', 'bom dia'],
-        response: "Olá! Eu sou o assistente virtual da Lavtec. Como posso ajudar você a saber mais sobre a Lav SmartClean 2.1 hoje? [Pergunte sobre: *preço*, *etapas de lavagem*, *sustentabilidade* ou *dúvidas*]."
+        keywords: ['oi', 'ola', 'olá', 'saudacao', 'bom dia', 'boa tarde', 'boa noite'],
+        response: "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?"
     },
     {
-        keywords: ['preco', 'preço', 'valor', 'custa'],
-        response: "O preço da Lav SmartClean 2.1 é de R$ 30.000,00. Você pode adicioná-la diretamente ao carrinho."
+        keywords: ['comprar', 'compra', 'como faço para comprar', 'adquirir'],
+        response: "É super simples! Clique no ícone ‘Comprar’ e siga as instruções da página."
     },
     {
-        keywords: ['etapas', 'fases', 'processo', 'lavagem'],
-        response: "O processo de higienização possui 4 etapas: Pré-Lavagem, Lavagem Potente, Secagem Turbo e Entrega Automática. Qual delas você gostaria de saber mais?"
+        keywords: ['contato', 'entrar em contato', 'falar com a equipe', 'falar com atendente'],
+        response: "Você pode falar com a nossa equipe pelo chat online, e-mail ou redes sociais."
     },
     {
-        keywords: ['pre-lavagem', 'pré-lavagem', 'residuos'],
-        response: "A Pré-Lavagem usa um jato potente de água quente para remover os resíduos superficiais e preparar os utensílios para a higienização principal, otimizando a limpeza."
+        keywords: ['devolucao', 'devolver', 'como faço para fazer uma devolução'],
+        response: "Para solicitar uma devolução, entre em contato com o nosso suporte informando o número do pedido."
     },
     {
-        keywords: ['secagem', 'secar', 'umidade', 'turbo'],
-        response: "A Secagem Turbo utiliza um potente jato secador com ar quente de alta velocidade para eliminar totalmente a umidade em segundos, garantindo utensílios prontos para uso."
+        keywords: ['entrega', 'entregam', 'brasil inteiro', 'territorio nacional', 'frete'],
+        response: "Sim! 🇧🇷 A TEC-LAV realiza entregas em todo o território nacional."
     },
     {
-        keywords: ['sustentabilidade', 'agua', 'energia', 'economia'],
-        response: "A Lav SmartClean 2.1 é focada em Sustentabilidade, utilizando tecnologia que reduz o consumo de água por meio de sistemas de recirculação e otimização de energia. Pergunte sobre a *economia de água* para mais detalhes."
+        keywords: ['maquina', 'eficiente', 'agil', 'rapida', 'tecnologia'],
+        response: "Com certeza! 💧 Nossa máquina foi desenvolvida com tecnologia de ponta para garantir máxima eficiência."
     },
     {
-        keywords: ['duvidas', 'falar com atendente', 'humano', 'suporte'],
-        response: "No momento, estou focado nas informações técnicas da máquina. Se precisar de suporte humano, envie sua mensagem pela seção de Contato no nosso site, e responderemos em até 24h."
+        keywords: ['confiavel', 'confiavel', 'transparente', 'qualidade'],
+        response: "Sim! 🌿 A TEC-LAV preza pela transparência, qualidade e satisfação dos clientes."
     },
     {
-        keywords: ['adeus', 'obrigado', 'tchau', 'valeu'],
-        response: "Foi um prazer ajudar! Não hesite em perguntar se tiver mais dúvidas. Tenha um ótimo dia!"
+        keywords: ['garantia', 'tem garantia', 'garantias'],
+        response: "Sim! Todos os nossos produtos possuem garantia contra defeitos de fabricação."
+    },
+    {
+        keywords: ['pagamento', 'formas de pagamento', 'cartao', 'pix', 'boleto'],
+        response: "Aceitamos cartões de crédito, débito, Pix e boleto bancário."
+    },
+    {
+        keywords: ['adeus', 'obrigado', 'tchau', 'valeu', 'despedida'],
+        response: "Obrigado por conversar comigo! 😊 Até a próxima."
     },
 ];
 
@@ -363,7 +371,19 @@ function getBotResponse(userMessage) {
         item.keywords.some(keyword => message.includes(keyword))
     );
 
-    return foundIntention ? foundIntention.response : "Desculpe, não entendi. Tente perguntar sobre: *preço*, *etapas de lavagem* ou *sustentabilidade*."
+    // Se nenhuma intenção específica for encontrada, verifica a mensagem de despedida padrão.
+    // Isso evita que a mensagem "desculpe, não entendi" apareça se for uma despedida.
+    const isFarewell = knowledgeBase.find(item => 
+        item.keywords.includes('despedida') && item.keywords.some(keyword => message.includes(keyword))
+    );
+
+    if (foundIntention) {
+        return foundIntention.response;
+    } else if (isFarewell) {
+        return isFarewell.response;
+    } else {
+        return "Desculpe, não entendi. Tente perguntar sobre: *comprar*, *contato*, *devolução* ou *garantia*."
+    }
 }
 
 // Renderiza a mensagem no chat
@@ -418,7 +438,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (event) => {
         if (cartDrawer && cartDrawer.classList.contains('open') && 
             !event.target.closest('.cart-section') && 
-            !event.target.closest('.cart-btn')) {
+            !event.target.closest('.cart-btn') &&
+            !event.target.closest('#chatbot-window') && // Ignora cliques dentro do chatbot
+            !event.target.closest('#chatbot-toggle')) { // Ignora cliques no botão do chatbot
             closeCart();
         }
     });
@@ -443,7 +465,8 @@ document.addEventListener('DOMContentLoaded', () => {
             botToggle.classList.toggle('open');
             if (botWindow.classList.contains('open')) {
                 setTimeout(() => {
-                    appendMessage('bot', "Olá! Eu sou o assistente virtual da Lavtec. Posso responder sobre a Lav SmartClean 2.1. Tente perguntar sobre o *preço* ou *etapas*.");
+                    // Mensagem de Boas-vindas Atualizada
+                    appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?");
                 }, 500);
             }
         });
