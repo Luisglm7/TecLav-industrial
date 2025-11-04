@@ -325,7 +325,7 @@ const botWindow = document.getElementById('chatbot-window');
 const knowledgeBase = [
     {
         keywords: ['oi', 'ola', 'olá', 'saudacao', 'bom dia', 'boa tarde', 'boa noite'],
-        response: "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?"
+        response: "Olá! 😊 Seja bem-vindo(a) à TECLAV! Como posso te ajudar hoje?"
     },
     {
         keywords: ['comprar', 'compra', 'como faço para comprar', 'adquirir'],
@@ -341,7 +341,7 @@ const knowledgeBase = [
     },
     {
         keywords: ['entrega', 'entregam', 'brasil inteiro', 'territorio nacional', 'frete'],
-        response: "Sim! 🇧🇷 A TEC-LAV realiza entregas em todo o território nacional."
+        response: "Sim! 🇧🇷 A TECLAV realiza entregas em todo o território nacional."
     },
     {
         keywords: ['maquina', 'eficiente', 'agil', 'rapida', 'tecnologia'],
@@ -349,7 +349,7 @@ const knowledgeBase = [
     },
     {
         keywords: ['confiavel', 'confiavel', 'transparente', 'qualidade'],
-        response: "Sim! 🌿 A TEC-LAV preza pela transparência, qualidade e satisfação dos clientes."
+        response: "Sim! 🌿 A TECLAV preza pela transparência, qualidade e satisfação dos clientes."
     },
     {
         keywords: ['garantia', 'tem garantia', 'garantias'],
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (botWindow.classList.contains('open')) {
                 setTimeout(() => {
                     // Mensagem de Boas-vindas Atualizada
-                    appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?");
+                    appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TECLAV! Como posso te ajudar hoje?");
                 }, 500);
             }
         });
