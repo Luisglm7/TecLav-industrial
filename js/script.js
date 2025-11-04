@@ -268,20 +268,22 @@ function closeCart() {
     }
 }
 
-// Função para finalizar compra
+// Função para finalizar compra (ATUALIZADA PARA REDIRECIONAR AO CHECKOUT)
 function checkout() {
     if (cart.length === 0) {
         showToast('Carrinho vazio! Adicione produtos antes de finalizar.', 'error');
         return;
     }
     
+    // Calcula o total
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    showToast(`Compra finalizada! Total: R$ ${total.toFixed(2).replace('.', ',')}`);
     
-    cart = [];
-    renderCart();
-    saveCart();
-    closeCart();
+    // Armazena o total e os itens do carrinho no localStorage para a página de checkout
+    localStorage.setItem('checkoutTotal', total.toFixed(2));
+    localStorage.setItem('checkoutCart', JSON.stringify(cart)); // Opcional: para exibir itens no checkout
+    
+    // Redireciona para a página de checkout
+    window.location.href = 'checkout.html';
 }
 
 // --- LÓGICA DE FADE-IN (ANIMAÇÃO) ---
@@ -372,7 +374,6 @@ function getBotResponse(userMessage) {
     );
 
     // Se nenhuma intenção específica for encontrada, verifica a mensagem de despedida padrão.
-    // Isso evita que a mensagem "desculpe, não entendi" apareça se for uma despedida.
     const isFarewell = knowledgeBase.find(item => 
         item.keywords.includes('despedida') && item.keywords.some(keyword => message.includes(keyword))
     );
@@ -473,6 +474,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     console.log('Inicialização completa: Carrinho, Produtos e Chatbot.');
+
+    // Lógica específica para a página de checkout.html
+    if (window.location.pathname.includes('checkout.html')) {
+        const checkoutTotalElement = document.getElementById('checkout-total');
+        const paymentForm = document.getElementById('payment-form');
+
+        if (checkoutTotalElement) {
+            const total = localStorage.getItem('checkoutTotal');
+            checkoutTotalElement.textContent = `R$ ${Number(total).toFixed(2).replace('.', ',')}`;
+        }
+
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Impede o envio padrão do formulário
+                
+                console.log('Dados do cartão enviados (simulação)!');
+                showToast('Pagamento processado com sucesso! Redirecionando...', 'success');
+
+                // Limpa o carrinho após a "compra" e redireciona para o início
+                cart = [];
+                saveCart(); // Salva o carrinho vazio
+                localStorage.removeItem('checkoutTotal'); // Limpa o total de checkout
+                localStorage.removeItem('checkoutCart'); // Limpa os itens de checkout
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html'; // Redireciona para a página inicial
+                }, 2000);
+            });
+        }
+    }
 });
 
 // Torna funções globais para uso nos eventos HTML

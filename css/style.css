@@ -114,7 +114,7 @@ body {
     display: none !important;
 }
 
-/* ---------- Hero Section ---------- */
+/* ---------- Hero Section (Não diretamente em compra.html ou checkout.html, mas mantido) ---------- */
 .hero-section {
     padding: 4rem 0;
 }
@@ -173,7 +173,7 @@ body {
     box-shadow: var(--shadow);
 }
 
-/* ---------- Features ---------- */
+/* ---------- Features (Não diretamente em compra.html ou checkout.html, mas mantido) ---------- */
 .features {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -197,7 +197,7 @@ body {
     font-size: .95rem;
 }
 
-/* ---------- About Section ---------- */
+/* ---------- About Section (Não diretamente em compra.html ou checkout.html, mas mantido) ---------- */
 .about-section {
     padding: 4rem 0;
 }
@@ -572,97 +572,6 @@ body {
     padding: 0 1rem;
 }
 
-/* ---------- Responsividade ---------- */
-
-@media (max-width: 980px) {
-    .container {
-        padding: 0 1.5rem;
-    }
-    .hero-inner {
-        grid-template-columns: 1fr;
-    }
-    .hero-left h1 {
-        font-size: 2rem;
-    }
-    .features {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .about-grid {
-        grid-template-columns: 1fr;
-    }
-    /* Responsividade do layout de produto */
-    .product-details-section {
-        grid-template-columns: 1fr; /* Empilha as colunas */
-    }
-    .details-card {
-        position: static; /* Remove sticky */
-        order: -1; /* Card acima da descrição */
-    }
-}
-
-@media (max-width: 720px) {
-    .container {
-        padding: 0 0.8rem;
-    }
-    .navbar {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .logo {
-        width: 100%;
-        text-align: center;
-    }
-    .nav-links {
-        flex-direction: row;
-    }
-    .hero-left h1 {
-        font-size: 1.8rem;
-    }
-    .hero-ctas {
-        flex-direction: column;
-    }
-    .cta-button, .ghost-button {
-        width: 100%;
-    }
-    .features {
-        grid-template-columns: 1fr;
-    }
-    .product-details-section {
-        padding-top: 1rem;
-    }
-    /* Mobile cart fix */
-    .cart-section {
-        right: 50%;
-        transform: translateX(50%) translateX(110%); /* Ajuste para esconder corretamente */
-        top: auto;
-        bottom: 15px;
-        width: 95%;
-        max-width: 400px;
-    }
-    .cart-section.open {
-        transform: translateX(-50%); /* Ajuste para mostrar corretamente */
-    }
-    .cart-item {
-        flex-wrap: wrap; /* Permite que os itens se quebrem em várias linhas */
-        justify-content: center;
-        text-align: center;
-    }
-    .cart-item-info, .cart-item-controls {
-        width: 100%; /* Ocupam largura total */
-        justify-content: center; /* Centraliza o conteúdo */
-        padding-right: 0;
-    }
-    .cart-item-info strong {
-        font-size: 1rem;
-    }
-    .cart-item-info div {
-        font-size: 0.8rem;
-    }
-    .cart-item-controls {
-        margin-top: 0.5rem; /* Espaço entre info e controles */
-    }
-}
-
 /* --- Estilos do Chatbot --- */
 #chatbot-toggle {
     position: fixed;
@@ -802,8 +711,212 @@ body {
     background: var(--accent-2);
 }
 
-/* Responsividade do Chatbot para telas pequenas */
-@media (max-width: 450px) {
+/* --- Estilos para a Página de Checkout --- */
+.checkout-page-section {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.checkout-page-section h2 {
+    color: #111827;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.checkout-page-section p {
+    color: #4b5563;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.payment-form-container {
+    background: var(--card);
+    padding: 2rem;
+    border-radius: var(--radius);
+    text-align: left;
+}
+
+.payment-form-container h3 {
+    color: var(--accent);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    border-bottom: 1px solid rgba(0, 113, 227, 0.15);
+    padding-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #111827;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0; /* Remove margin-bottom duplicado */
+}
+
+.form-row .expiry-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-row .expiry-inputs input {
+    width: 60px; /* Ajusta largura para MM/AA */
+    text-align: center;
+}
+
+.form-row .expiry-inputs .separator {
+    font-size: 1.2rem;
+    color: #6b7280;
+}
+
+.total-display {
+    text-align: right;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    color: #111827;
+}
+
+.total-display strong {
+    color: var(--accent);
+    font-weight: 800;
+}
+
+.full-width-button {
+    width: 100%;
+    margin-bottom: 1rem; /* Espaçamento entre botões */
+}
+
+
+/* ---------- Responsividade ---------- */
+
+@media (max-width: 980px) {
+    .container {
+        padding: 0 1.5rem;
+    }
+    .hero-inner {
+        grid-template-columns: 1fr;
+    }
+    .hero-left h1 {
+        font-size: 2rem;
+    }
+    .features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Responsividade do layout de produto */
+    .product-details-section {
+        grid-template-columns: 1fr; /* Empilha as colunas */
+    }
+    .details-card {
+        position: static; /* Remove sticky */
+        order: -1; /* Card acima da descrição */
+    }
+}
+
+@media (max-width: 720px) {
+    .container {
+        padding: 0 0.8rem;
+    }
+    .navbar {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .logo {
+        width: 100%;
+        text-align: center;
+    }
+    .nav-links {
+        flex-direction: row;
+    }
+    .hero-left h1 {
+        font-size: 1.8rem;
+    }
+    .hero-ctas {
+        flex-direction: column;
+    }
+    .cta-button, .ghost-button {
+        width: 100%;
+    }
+    .features {
+        grid-template-columns: 1fr;
+    }
+    .product-details-section {
+        padding-top: 1rem;
+    }
+    /* Mobile cart fix */
+    .cart-section {
+        right: 50%;
+        transform: translateX(50%) translateX(110%); /* Ajuste para esconder corretamente */
+        top: auto;
+        bottom: 15px;
+        width: 95%;
+        max-width: 400px;
+    }
+    .cart-section.open {
+        transform: translateX(-50%); /* Ajuste para mostrar corretamente */
+    }
+    .cart-item {
+        flex-wrap: wrap; /* Permite que os itens se quebrem em várias linhas */
+        justify-content: center;
+        text-align: center;
+    }
+    .cart-item-info, .cart-item-controls {
+        width: 100%; /* Ocupam largura total */
+        justify-content: center; /* Centraliza o conteúdo */
+        padding-right: 0;
+    }
+    .cart-item-info strong {
+        font-size: 1rem;
+    }
+    .cart-item-info div {
+        font-size: 0.8rem;
+    }
+    .cart-item-controls {
+        margin-top: 0.5rem; /* Espaço entre info e controles */
+    }
+
+    /* Responsividade do Chatbot para telas pequenas */
     #chatbot-window {
         right: 10px;
         bottom: 70px;
@@ -813,5 +926,24 @@ body {
     #chatbot-toggle {
         right: 10px;
         bottom: 10px;
+    }
+
+    /* Ajustes de responsividade para o formulário de pagamento */
+    .checkout-page-section {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+    }
+    .payment-form-container {
+        padding: 1.5rem;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .form-row .form-group {
+        margin-bottom: 1.2rem;
+    }
+    .form-row .expiry-inputs input {
+        width: 100%; /* Ocupa largura total em mobile */
     }
 }

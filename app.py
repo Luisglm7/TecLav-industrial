@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# CORS mais permissivo para desenvolvimento
 CORS(app)
 
 # Dados dos produtos - ATUALIZADO PARA LAV SMARTCLEAN 2.1
