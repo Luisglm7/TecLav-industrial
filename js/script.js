@@ -16,7 +16,7 @@ const fallbackProducts = [
         name: 'Lav SmartClean 2.1',
         description: 'Ideal para indústrias de pequeno a grande porte.',
         price: 30000.00,
-        image: 'https://via.placeholder.com/300x200?text=Lav+SmartClean+2.1'
+        image: 'img/img1.png'
     }
 ];
 
