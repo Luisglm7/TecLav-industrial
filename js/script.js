@@ -2,6 +2,20 @@
 const BASE_FREIGHT_COST = 350.00;
 const COST_PER_KM = 1.50;
 
+// SIMULAÇÃO DE BANCO DE DADOS DE DISTÂNCIAS (Cidade base: Itapeva, SP)
+const simulatedDistances = [
+    { search: '18200-000', city: 'Itu', distance: 198 },
+    { search: '13010-000', city: 'Campinas', distance: 300 },
+    { search: '01000-000', city: 'São Paulo', distance: 350 },
+    { search: '14000-000', city: 'Ribeirão Preto', distance: 400 },
+    { search: '12200-000', city: 'São José dos Campos', distance: 480 },
+    // Cidades próximas de Itapeva para teste de frete baixo/médio
+    { search: '18460-000', city: 'Itararé', distance: 40 },
+    { search: '18270-000', city: 'Tatuí', distance: 130 },
+    { search: '18000-000', city: 'Sorocaba', distance: 150 }
+];
+
+
 // Array para armazenar os itens do carrinho
 let cart = [];
 let products = []; // Array global para produtos
@@ -300,6 +314,40 @@ function calculateFreight(distanceKm) {
     return BASE_FREIGHT_COST + (distanceKm * COST_PER_KM);
 }
 
+// Esta função agora chama a API Flask para calcular
+async function calculateFreightFromAPI(distanceKm) {
+    if (distanceKm <= 0 || isNaN(distanceKm)) {
+        return BASE_FREIGHT_COST; // Custo fixo se a distância for inválida
+    }
+    
+    try {
+        const response = await fetch(`http://127.0.0.1:5000/api/freight?distance=${distanceKm}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+            return data.freight_cost;
+        } else {
+            // Fallback para cálculo local se a API falhar
+            return BASE_FREIGHT_COST + (distanceKm * COST_PER_KM);
+        }
+    } catch (e) {
+        // Fallback total
+        return BASE_FREIGHT_COST + (distanceKm * COST_PER_KM);
+    }
+}
+
+// --- FUNÇÃO DE BUSCA DE DISTÂNCIA (SIMULAÇÃO) ---
+function getSimulatedDistance(searchTerm) {
+    // Procura o termo no array de simulação
+    const match = simulatedDistances.find(item => item.search.includes(searchTerm) || item.city.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    if (match) {
+        return { distance: match.distance, city: match.city };
+    }
+    // Retorna uma distância padrão alta se não encontrar (simulando um local longe)
+    return { distance: 800, city: 'Local Desconhecido (800km)' }; 
+}
+
 
 // --- LÓGICA DE FADE-IN (ANIMAÇÃO) ---
 
@@ -448,28 +496,36 @@ document.addEventListener('DOMContentLoaded', () => {
             freightCostElement.textContent = `R$ ${freight.toFixed(2).replace('.', ',')}`;
         }
 
-        // Inicializa com o custo fixo de frete (R$ 350,00)
+        // Inicializa com o custo fixo de frete
         updateCheckoutTotal(BASE_FREIGHT_COST); 
 
         // Evento do botão de Cálculo
         if (calculateFreightBtn) {
-            calculateFreightBtn.addEventListener('click', () => {
-                const distance = Number(distanceInput.value);
-                if (distance > 0 && !isNaN(distance)) {
-                    const calculatedFreight = calculateFreight(distance);
-                    updateCheckoutTotal(calculatedFreight);
-                    
-                    // Armazena os novos valores
-                    localStorage.setItem('distanceKm', distance);
-                    localStorage.setItem('freightCost', calculatedFreight.toFixed(2));
-
-                    showToast(`Frete calculado para ${distance} km!`, 'success');
-                } else {
-                    showToast('Insira uma distância válida (Km).', 'error');
-                    updateCheckoutTotal(BASE_FREIGHT_COST); // Volta para o valor base se o cálculo falhar
-                    localStorage.setItem('freightCost', BASE_FREIGHT_COST.toFixed(2));
-                    localStorage.setItem('distanceKm', 0);
+            calculateFreightBtn.addEventListener('click', async () => {
+                const searchTerm = distanceInput.value.trim();
+                
+                if (searchTerm.length < 3) {
+                    showToast('Insira um CEP ou nome de cidade válido para pesquisa.', 'error');
+                    return;
                 }
+
+                // 1. Simula a busca da distância pelo CEP/Endereço
+                const { distance, city } = getSimulatedDistance(searchTerm);
+                
+                // 2. Calcula o frete usando a API (ou fallback)
+                const calculatedFreight = await calculateFreightFromAPI(distance);
+
+                // 3. Atualiza a tela
+                updateCheckoutTotal(calculatedFreight);
+                
+                // 4. Atualiza os inputs e storage
+                distanceInput.value = distance; // Mostra a distância encontrada
+                distanceInput.placeholder = `Distância de ${city}`;
+
+                localStorage.setItem('distanceKm', distance);
+                localStorage.setItem('freightCost', calculatedFreight.toFixed(2));
+                
+                showToast(`Frete de R$ ${calculatedFreight.toFixed(2).replace('.', ',')} calculado para ${city} (${distance} km)!`, 'success');
             });
         }
 
@@ -481,6 +537,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const finalFreight = Number(localStorage.getItem('freightCost') || BASE_FREIGHT_COST);
                 const finalTotal = subtotal + finalFreight;
                 
+                // Verifica se o frete foi calculado (se for só o valor base, avisa)
+                if (finalFreight === BASE_FREIGHT_COST && distanceInput.value === '0') {
+                    showToast('Por favor, calcule o frete antes de finalizar.', 'error');
+                    return;
+                }
+
                 showToast(`Pagamento de R$ ${finalTotal.toFixed(2).replace('.', ',')} processado com sucesso!`, 'success');
 
                 // Simulação: Limpa e redireciona
