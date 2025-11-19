@@ -1,3 +1,7 @@
+// VARIÁVEIS DE FRETE
+const BASE_FREIGHT_COST = 350.00;
+const COST_PER_KM = 1.50;
+
 // Array para armazenar os itens do carrinho
 let cart = [];
 let products = []; // Array global para produtos
@@ -16,7 +20,7 @@ const fallbackProducts = [
         name: 'Lav SmartClean 2.1',
         description: 'Ideal para indústrias de pequeno a grande porte.',
         price: 30000.00,
-        image: 'img/img1.png'
+        image: 'https://via.placeholder.com/300x200?text=Lav+SmartClean+2.1'
     }
 ];
 
@@ -173,7 +177,7 @@ function renderProducts(productsToRender) {
     }
 }
 
-// --- FUNÇÕES DE CARRINHO ---
+// --- FUNÇÕES DE CARRINHO E CHECKOUT ---
 
 // Função para adicionar um produto ao carrinho
 function addToCart(product) {
@@ -268,27 +272,37 @@ function closeCart() {
     }
 }
 
-// Função para finalizar compra (ATUALIZADA PARA REDIRECIONAR AO CHECKOUT)
+// Função para finalizar compra (ATUALIZADA)
 function checkout() {
     if (cart.length === 0) {
         showToast('Carrinho vazio! Adicione produtos antes de finalizar.', 'error');
         return;
     }
     
-    // Calcula o total
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     
-    // Armazena o total e os itens do carrinho no localStorage para a página de checkout
-    localStorage.setItem('checkoutTotal', total.toFixed(2));
-    localStorage.setItem('checkoutCart', JSON.stringify(cart)); // Opcional: para exibir itens no checkout
+    // Armazena o total base (sem frete) no localStorage
+    localStorage.setItem('checkoutSubtotal', total.toFixed(2));
+    
+    // Armazena os custos de frete no localStorage
+    localStorage.setItem('freightCost', BASE_FREIGHT_COST.toFixed(2));
+    localStorage.setItem('distanceKm', 0); // Zera a distância inicial
     
     // Redireciona para a página de checkout
     window.location.href = 'checkout.html';
 }
 
+// --- FUNÇÃO DE CÁLCULO DE FRETE ---
+function calculateFreight(distanceKm) {
+    if (distanceKm <= 0 || isNaN(distanceKm)) {
+        return 0; // Se inválido, considera apenas o custo fixo.
+    }
+    return BASE_FREIGHT_COST + (distanceKm * COST_PER_KM);
+}
+
+
 // --- LÓGICA DE FADE-IN (ANIMAÇÃO) ---
 
-// LÓGICA DE FADE-IN
 function setupFadeInObserver() {
     const fadeInElements = document.querySelectorAll('.fade-in');
     
@@ -325,7 +339,7 @@ const botWindow = document.getElementById('chatbot-window');
 const knowledgeBase = [
     {
         keywords: ['oi', 'ola', 'olá', 'saudacao', 'bom dia', 'boa tarde', 'boa noite'],
-        response: "Olá! 😊 Seja bem-vindo(a) à TECLAV! Como posso te ajudar hoje?"
+        response: "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?"
     },
     {
         keywords: ['comprar', 'compra', 'como faço para comprar', 'adquirir'],
@@ -341,7 +355,7 @@ const knowledgeBase = [
     },
     {
         keywords: ['entrega', 'entregam', 'brasil inteiro', 'territorio nacional', 'frete'],
-        response: "Sim! 🇧🇷 A TECLAV realiza entregas em todo o território nacional."
+        response: "Sim! 🇧🇷 A TEC-LAV realiza entregas em todo o território nacional."
     },
     {
         keywords: ['maquina', 'eficiente', 'agil', 'rapida', 'tecnologia'],
@@ -349,7 +363,7 @@ const knowledgeBase = [
     },
     {
         keywords: ['confiavel', 'confiavel', 'transparente', 'qualidade'],
-        response: "Sim! 🌿 A TECLAV preza pela transparência, qualidade e satisfação dos clientes."
+        response: "Sim! 🌿 A TEC-LAV preza pela transparência, qualidade e satisfação dos clientes."
     },
     {
         keywords: ['garantia', 'tem garantia', 'garantias'],
@@ -373,7 +387,6 @@ function getBotResponse(userMessage) {
         item.keywords.some(keyword => message.includes(keyword))
     );
 
-    // Se nenhuma intenção específica for encontrada, verifica a mensagem de despedida padrão.
     const isFarewell = knowledgeBase.find(item => 
         item.keywords.includes('despedida') && item.keywords.some(keyword => message.includes(keyword))
     );
@@ -412,98 +425,142 @@ function handleSendMessage() {
     }, 800);
 }
 
+
 // --- INICIALIZAÇÃO E EVENT LISTENERS GERAIS ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. CARREGA DADOS DO CARRINHO
-    loadCart();
-    
-    // 2. INICIA PRODUTOS (se for a página de compra)
-    if (productGrid) {
-        fetchAndRenderProducts();
-    }
-    
-    // 3. CONFIGURA BOTÕES DO CARRINHO
-    document.querySelectorAll('.cart-btn').forEach(btn => {
-        btn.addEventListener('click', openCart);
-    });
-    
-    if (document.querySelector('.close-cart')) {
-        document.querySelector('.close-cart').addEventListener('click', closeCart);
-    }
-    
-    if (document.querySelector('.checkout-button')) {
-        document.querySelector('.checkout-button').addEventListener('click', checkout);
-    }
-    
-    document.addEventListener('click', (event) => {
-        if (cartDrawer && cartDrawer.classList.contains('open') && 
-            !event.target.closest('.cart-section') && 
-            !event.target.closest('.cart-btn') &&
-            !event.target.closest('#chatbot-window') && // Ignora cliques dentro do chatbot
-            !event.target.closest('#chatbot-toggle')) { // Ignora cliques no botão do chatbot
-            closeCart();
-        }
-    });
-
-    // 4. INICIA ANIMAÇÕES FADE-IN
-    setupFadeInObserver();
-
-    // 5. CONFIGURA CHATBOT
-    if (chatButton) {
-        chatButton.addEventListener('click', handleSendMessage);
-    }
-    if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSendMessage();
-            }
-        });
-    }
-    if (botToggle && botWindow) {
-        botToggle.addEventListener('click', () => {
-            botWindow.classList.toggle('open');
-            botToggle.classList.toggle('open');
-            if (botWindow.classList.contains('open')) {
-                setTimeout(() => {
-                    // Mensagem de Boas-vindas Atualizada
-                    appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TECLAV! Como posso te ajudar hoje?");
-                }, 500);
-            }
-        });
-    }
-    
-    console.log('Inicialização completa: Carrinho, Produtos e Chatbot.');
-
+    // ----------------------------------------------------
     // Lógica específica para a página de checkout.html
+    // ----------------------------------------------------
     if (window.location.pathname.includes('checkout.html')) {
+        const distanceInput = document.getElementById('distance-input');
+        const calculateFreightBtn = document.getElementById('calculate-freight-btn');
+        const freightCostElement = document.getElementById('freight-cost');
         const checkoutTotalElement = document.getElementById('checkout-total');
         const paymentForm = document.getElementById('payment-form');
+        
+        const subtotal = Number(localStorage.getItem('checkoutSubtotal') || 0);
 
-        if (checkoutTotalElement) {
-            const total = localStorage.getItem('checkoutTotal');
-            checkoutTotalElement.textContent = `R$ ${Number(total).toFixed(2).replace('.', ',')}`;
+        // Função para atualizar o total na tela
+        function updateCheckoutTotal(freight) {
+            const finalTotal = subtotal + freight;
+            checkoutTotalElement.textContent = `R$ ${finalTotal.toFixed(2).replace('.', ',')}`;
+            freightCostElement.textContent = `R$ ${freight.toFixed(2).replace('.', ',')}`;
         }
 
+        // Inicializa com o custo fixo de frete (R$ 350,00)
+        updateCheckoutTotal(BASE_FREIGHT_COST); 
+
+        // Evento do botão de Cálculo
+        if (calculateFreightBtn) {
+            calculateFreightBtn.addEventListener('click', () => {
+                const distance = Number(distanceInput.value);
+                if (distance > 0 && !isNaN(distance)) {
+                    const calculatedFreight = calculateFreight(distance);
+                    updateCheckoutTotal(calculatedFreight);
+                    
+                    // Armazena os novos valores
+                    localStorage.setItem('distanceKm', distance);
+                    localStorage.setItem('freightCost', calculatedFreight.toFixed(2));
+
+                    showToast(`Frete calculado para ${distance} km!`, 'success');
+                } else {
+                    showToast('Insira uma distância válida (Km).', 'error');
+                    updateCheckoutTotal(BASE_FREIGHT_COST); // Volta para o valor base se o cálculo falhar
+                    localStorage.setItem('freightCost', BASE_FREIGHT_COST.toFixed(2));
+                    localStorage.setItem('distanceKm', 0);
+                }
+            });
+        }
+
+        // Lógica do formulário de pagamento
         if (paymentForm) {
             paymentForm.addEventListener('submit', (event) => {
-                event.preventDefault(); // Impede o envio padrão do formulário
+                event.preventDefault(); 
                 
-                console.log('Dados do cartão enviados (simulação)!');
-                showToast('Pagamento processado com sucesso! Redirecionando...', 'success');
+                const finalFreight = Number(localStorage.getItem('freightCost') || BASE_FREIGHT_COST);
+                const finalTotal = subtotal + finalFreight;
+                
+                showToast(`Pagamento de R$ ${finalTotal.toFixed(2).replace('.', ',')} processado com sucesso!`, 'success');
 
-                // Limpa o carrinho após a "compra" e redireciona para o início
+                // Simulação: Limpa e redireciona
                 cart = [];
-                saveCart(); // Salva o carrinho vazio
-                localStorage.removeItem('checkoutTotal'); // Limpa o total de checkout
-                localStorage.removeItem('checkoutCart'); // Limpa os itens de checkout
+                saveCart(); 
+                localStorage.removeItem('checkoutSubtotal');
+                localStorage.removeItem('freightCost');
+                localStorage.removeItem('distanceKm');
                 
                 setTimeout(() => {
-                    window.location.href = 'index.html'; // Redireciona para a página inicial
-                }, 2000);
+                    window.location.href = 'index.html'; 
+                }, 2500);
+            });
+        }
+    } 
+    // ----------------------------------------------------
+    // Lógica para as outras páginas (index.html, compra.html, sobre.html)
+    // ----------------------------------------------------
+    else {
+        loadCart();
+        
+        if (productGrid) {
+            fetchAndRenderProducts();
+        }
+        
+        document.querySelectorAll('.cart-btn').forEach(btn => {
+            btn.addEventListener('click', openCart);
+        });
+        
+        if (document.querySelector('.close-cart')) {
+            document.querySelector('.close-cart').addEventListener('click', closeCart);
+        }
+        
+        if (document.querySelector('.checkout-button')) {
+            document.querySelector('.checkout-button').addEventListener('click', checkout);
+        }
+        
+        document.addEventListener('click', (event) => {
+            if (cartDrawer && cartDrawer.classList.contains('open') && 
+                !event.target.closest('.cart-section') && 
+                !event.target.closest('.cart-btn') &&
+                !event.target.closest('#chatbot-window') && 
+                !event.target.closest('#chatbot-toggle')) {
+                closeCart();
+            }
+        });
+
+        // Configura Chatbot (para páginas que não são checkout)
+        const chatButton = document.getElementById('chatbot-send-btn');
+        const chatInput = document.getElementById('chatbot-input');
+        const botToggle = document.getElementById('chatbot-toggle');
+        const botWindow = document.getElementById('chatbot-window');
+
+        if (chatButton) {
+            chatButton.addEventListener('click', handleSendMessage);
+        }
+        if (chatInput) {
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+        }
+        if (botToggle && botWindow) {
+            botToggle.addEventListener('click', () => {
+                botWindow.classList.toggle('open');
+                botToggle.classList.toggle('open');
+                if (botWindow.classList.contains('open')) {
+                    setTimeout(() => {
+                        appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?");
+                    }, 500);
+                }
             });
         }
     }
+    
+    // Inicia ANIMAÇÕES FADE-IN em todas as páginas
+    setupFadeInObserver();
+    
+    console.log('Inicialização completa.');
 });
 
 // Torna funções globais para uso nos eventos HTML

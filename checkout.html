@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalizar Compra - Pagamento - TECLAV</title>
+    <title>Finalizar Compra - Pagamento - TEC-LAV</title>
     <link rel="stylesheet" href="css/style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="container navbar">
-            <a class="logo" href="index.html">TECLAV <span>Industrial</span></a>
+            <a class="logo" href="index.html">TEC-LAV <span>Industrial</span></a>
             <nav class="nav" aria-label="Navegação principal">
                 <ul id="primary-navigation" class="nav-links">
                     <li><a href="index.html">Início</a></li>
@@ -26,11 +26,25 @@
     <main class="main-content container fade-in">
         <section class="checkout-page-section">
             <h2>Finalizar Compra</h2>
-            <p>Por favor, insira seus dados de pagamento para concluir o pedido.</p>
+            <p>Por favor, insira a distância para calcular o frete e seus dados de pagamento.</p>
 
             <div class="payment-form-container">
+                
+                <h3>Calculadora de Frete</h3>
+                <div class="form-group">
+                    <label for="distance-input">Distância do seu CEP (Km)</label>
+                    <input type="number" id="distance-input" placeholder="Ex: 500" required min="1">
+                </div>
+                <button type="button" class="cta-button full-width-button" id="calculate-freight-btn">Calcular Frete</button>
+
+                <p class="total-display">Frete Estimado: <strong id="freight-cost">R$ 0,00</strong></p>
+                
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);" />
+
                 <h3>Detalhes do Pagamento</h3>
                 <form id="payment-form">
+                    <p class="total-display">Total do Pedido: <strong id="checkout-total">R$ 0,00</strong></p>
+
                     <div class="form-group">
                         <label for="card-number">Número do Cartão</label>
                         <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required maxlength="19">
@@ -58,14 +72,12 @@
                         <select id="installments" required>
                             <option value="">Selecione...</option>
                             <option value="1">1x </option>
-                            <option value="2">2x</option>
-                            <option value="3">3x</option>
-                            <option value="6">6x</option>
-                            <option value="10">10x</option>
+                            <option value="2">2x </option>
+                            <option value="3">3x </option>
+                            <option value="6">6x </option>
+                            <option value="10">10x </option>
                         </select>
                     </div>
-
-                    <p class="total-display">Total do Pedido: <strong id="checkout-total">R$ 0,00</strong></p>
 
                     <button type="submit" class="cta-button full-width-button">Confirmar Pagamento</button>
                     <button type="button" class="ghost-button full-width-button" onclick="window.history.back()">Voltar ao Carrinho</button>
@@ -75,9 +87,28 @@
     </main>
 
     <footer class="footer fade-in">
-        <div class="container">&copy; 2025 TECLAV Industrial. Todos os direitos reservados.</div>
+        <div class="container">&copy; 2025 TEC-LAV Industrial. Todos os direitos reservados.</div>
     </footer>
 
+    <div id="chatbot-toggle">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+        </svg>
+    </div>
+
+    <div id="chatbot-window">
+        <div class="chat-header">
+            Assistente TEC-LAV
+        </div>
+        <div id="chatbot-messages" class="chat-messages">
+            </div>
+        <div class="chat-input-area">
+            <input type="text" id="chatbot-input" placeholder="Pergunte sobre etapas, preço, etc.">
+            <button id="chatbot-send-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M2.01 21L23 12 2.01 3v6l15 3-15 3z"/></svg>
+            </button>
+        </div>
+    </div>
     <aside class="cart-section" id="cart-drawer" aria-live="polite">
         <div class="cart-header">
             <h3>Carrinho <span id="cart-count">(0)</span></h3>
@@ -89,26 +120,6 @@
             <button class="checkout-button">Finalizar Compra</button>
         </div>
     </aside>
-
-    <div id="chatbot-toggle">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="white">
-            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
-        </svg>
-    </div>
-
-    <div id="chatbot-window">
-        <div class="chat-header">
-            Assistente TECLAV
-        </div>
-        <div id="chatbot-messages" class="chat-messages">
-            </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatbot-input" placeholder="Pergunte sobre etapas, preço, etc.">
-            <button id="chatbot-send-btn">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M2.01 21L23 12 2.01 3v6l15 3-15 3z"/></svg>
-            </button>
-        </div>
-    </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
