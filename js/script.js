@@ -1,18 +1,42 @@
-// VARIÁVEIS DE FRETE
+// VARIÁVEIS DE FRETE (Estas variáveis são usadas pelo JS para fallback e pelo chatbot)
 const BASE_FREIGHT_COST = 350.00;
 const COST_PER_KM = 1.50;
 
-// SIMULAÇÃO DE BANCO DE DADOS DE DISTÂNCIAS (Cidade base: Itapeva, SP)
+// SIMULAÇÃO DE BANCO DE DADOS DE DISTÂNCIAS (Representa cidades pelo Brasil)
 const simulatedDistances = [
-    { search: '18200-000', city: 'Itu', distance: 198 },
-    { search: '13010-000', city: 'Campinas', distance: 300 },
-    { search: '01000-000', city: 'São Paulo', distance: 350 },
-    { search: '14000-000', city: 'Ribeirão Preto', distance: 400 },
-    { search: '12200-000', city: 'São José dos Campos', distance: 480 },
-    // Cidades próximas de Itapeva para teste de frete baixo/médio
-    { search: '18460-000', city: 'Itararé', distance: 40 },
-    { search: '18270-000', city: 'Tatuí', distance: 130 },
-    { search: '18000-000', city: 'Sorocaba', distance: 150 }
+    // CIDADES DE REFERÊNCIA PRÓXIMAS (SP)
+    { search: '18200-000', city: 'Itu, SP', distance: 198 },
+    { search: '13010-000', city: 'Campinas, SP', distance: 300 },
+    { search: '01000-000', city: 'São Paulo, SP', distance: 350 },
+    { search: '18000-000', city: 'Sorocaba, SP', distance: 150 },
+    
+    // CAPITAIS BRASILEIRAS (SIMULAÇÃO DE DISTÂNCIAS)
+    { search: '80000-000', city: 'Curitiba, PR', distance: 380 },
+    { search: '88000-000', city: 'Florianópolis, SC', distance: 680 },
+    { search: '90000-000', city: 'Porto Alegre, RS', distance: 1200 },
+    { search: '20000-000', city: 'Rio de Janeiro, RJ', distance: 580 },
+    { search: '30000-000', city: 'Belo Horizonte, MG', distance: 550 },
+    { search: '29000-000', city: 'Vitória, ES', distance: 1250 },
+    { search: '70000-000', city: 'Brasília, DF', distance: 980 },
+    { search: '78000-000', city: 'Cuiabá, MT', distance: 1680 },
+    { search: '79000-000', city: 'Campo Grande, MS', distance: 850 },
+    { search: '74000-000', city: 'Goiânia, GO', distance: 930 },
+    { search: '40000-000', city: 'Salvador, BA', distance: 1800 },
+    { search: '50000-000', city: 'Recife, PE', distance: 2500 },
+    { search: '60000-000', city: 'Fortaleza, CE', distance: 2850 },
+    { search: '59000-000', city: 'Natal, RN', distance: 2900 },
+    { search: '57000-000', city: 'Maceió, AL', distance: 2350 },
+    { search: '65000-000', city: 'São Luís, MA', distance: 2950 },
+    { search: '51000-000', city: 'João Pessoa, PB', distance: 2600 },
+    { search: '49000-000', city: 'Aracaju, SE', distance: 2100 },
+    { search: '64000-000', city: 'Teresina, PI', distance: 2400 },
+    { search: '69000-000', city: 'Manaus, AM', distance: 3500 },
+    { search: '66000-000', city: 'Belém, PA', distance: 3100 },
+    { search: '76800-000', city: 'Porto Velho, RO', distance: 2800 },
+    { search: '69300-000', city: 'Boa Vista, RR', distance: 4000 },
+    { search: '77000-000', city: 'Palmas, TO', distance: 1700 },
+    { search: '68900-000', city: 'Macapá, AP', distance: 3400 },
+    { search: '69900-000', city: 'Rio Branco, AC', distance: 3300 }
 ];
 
 
@@ -383,69 +407,53 @@ const chatButton = document.getElementById('chatbot-send-btn');
 const botToggle = document.getElementById('chatbot-toggle');
 const botWindow = document.getElementById('chatbot-window');
 
-// Base de Conhecimento do Chatbot (Regras/Intenções) - ATUALIZADA
-const knowledgeBase = [
-    {
-        keywords: ['oi', 'ola', 'olá', 'saudacao', 'bom dia', 'boa tarde', 'boa noite'],
-        response: "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?"
-    },
-    {
-        keywords: ['comprar', 'compra', 'como faço para comprar', 'adquirir'],
-        response: "É super simples! Clique no ícone ‘Comprar’ e siga as instruções da página."
-    },
-    {
-        keywords: ['contato', 'entrar em contato', 'falar com a equipe', 'falar com atendente'],
-        response: "Você pode falar com a nossa equipe pelo chat online, e-mail ou redes sociais."
-    },
-    {
-        keywords: ['devolucao', 'devolver', 'como faço para fazer uma devolução'],
-        response: "Para solicitar uma devolução, entre em contato com o nosso suporte informando o número do pedido."
-    },
-    {
-        keywords: ['entrega', 'entregam', 'brasil inteiro', 'territorio nacional', 'frete'],
-        response: "Sim! 🇧🇷 A TEC-LAV realiza entregas em todo o território nacional."
-    },
-    {
-        keywords: ['maquina', 'eficiente', 'agil', 'rapida', 'tecnologia'],
-        response: "Com certeza! 💧 Nossa máquina foi desenvolvida com tecnologia de ponta para garantir máxima eficiência."
-    },
-    {
-        keywords: ['confiavel', 'confiavel', 'transparente', 'qualidade'],
-        response: "Sim! 🌿 A TEC-LAV preza pela transparência, qualidade e satisfação dos clientes."
-    },
-    {
-        keywords: ['garantia', 'tem garantia', 'garantias'],
-        response: "Sim! Todos os nossos produtos possuem garantia contra defeitos de fabricação."
-    },
-    {
-        keywords: ['pagamento', 'formas de pagamento', 'cartao', 'pix', 'boleto'],
-        response: "Aceitamos cartões de crédito, débito, Pix e boleto bancário."
-    },
-    {
-        keywords: ['adeus', 'obrigado', 'tchau', 'valeu', 'despedida'],
-        response: "Obrigado por conversar comigo! 😊 Até a próxima."
-    },
-];
+// Respostas pré-definidas para o chatbot (conversacional)
+const botResponses = {
+    welcome: "💖 Bem-vindo(a) à Tec-Lav Industrial! Sua Parceira em Soluções de Limpeza! ✨\n\nOlá! Que alegria ter você por aqui! Meu nome é Lim e estou aqui para te ajudar com todas as suas dúvidas sobre os nossos produtos e serviços. Na Tec-Lav, nosso maior carinho é a sua satisfação!",
+    contact: "📞 Precisa Falar Conosco?\n\nSeja para tirar dúvidas específicas ou receber um atendimento personalizado, ficaremos muito felizes em conversar com você!\n\nTelefone de Contato (WhatsApp): **(15) 98658-2311**\n\nE-mail: **contato@teclavindustrial.com.br**",
+    devolution: "🛡️ Devolução:\n\nVocê tem até **6 (seis) meses de uso** para solicitar a devolução, caso o produto apresente algum defeito de fabricação. Sua tranquilidade é nossa prioridade!",
+    warranty: "🛡️ Garantia:\n\nOferecemos uma **garantia completa de 1 (um ano)** contra defeitos de fabricação. Sua tranquilidade é nossa prioridade!",
+    freight: "📦 Entrega e Frete - Entregamos para todo o Brasil!\n\nEnviamos os nossos produtos com todo o cuidado e carinho para qualquer lugar do nosso imenso Brasil!\n\n**Regiões Próximas a Itapeva (SP):** O **frete é por nossa conta!** Totalmente **grátis** para você!\n\n**Outras Regiões (Mais Distantes):** Para envios de longa distância, adicionamos um pequeno valor de **R$ 10,00 a R$ 20,00**, dependendo da proximidade. Este é um valor adicional para garantir que o seu pedido chegue em segurança e o mais rápido possível!",
+    payment: "💳 Formas de Pagamento\n\nOferecemos diversas opções para você finalizar sua compra de forma prática:\n\nAceitamos **Boleto Bancário, Cartão de Crédito** e **PIX**.\n\nVocê pode parcelar sua compra no cartão! Oferecemos a opção de dividir o valor para que sua compra caiba no seu bolso.",
+    products: "🛍️ Nossos Produtos\n\nPara conhecer todos os nossos produtos e ver as etapas de cada um em detalhes, acesse nossa página de produtos: [Link para Produtos].",
+    farewell: "Obrigado por conversar comigo! 😊 Um abraço carinhoso! 💖",
+    fallback: "Puxa, que pena! 😔 Essa é uma pergunta muito específica e **infelizmente não posso te ajudar com a resposta agora**. Mas não se preocupe! Você pode entrar em contato diretamente com a nossa equipe, que terá o maior prazer em te atender!\n\nLigue ou chame no WhatsApp: **(15) 98658-2311**\nOu envie um e-mail para: **contato@teclavindustrial.com.br**\n\nFico à disposição para qualquer outra dúvida sobre nossos produtos, entrega, pagamento e garantia! Um abraço carinhoso! 💖"
+};
 
-// Função Principal de Resposta do Bot
+// Função Principal de Resposta do Bot (Mais conversacional)
 function getBotResponse(userMessage) {
     const message = userMessage.toLowerCase();
-    
-    const foundIntention = knowledgeBase.find(item => 
-        item.keywords.some(keyword => message.includes(keyword))
-    );
 
-    const isFarewell = knowledgeBase.find(item => 
-        item.keywords.includes('despedida') && item.keywords.some(keyword => message.includes(keyword))
-    );
-
-    if (foundIntention) {
-        return foundIntention.response;
-    } else if (isFarewell) {
-        return isFarewell.response;
-    } else {
-        return "Desculpe, não entendi. Tente perguntar sobre: *comprar*, *contato*, *devolução* ou *garantia*."
+    // Priorize saudações e despedidas
+    if (message.includes('olá') || message.includes('oi') || message.includes('bom dia') || message.includes('boa tarde') || message.includes('boa noite')) {
+        return botResponses.welcome;
     }
+    if (message.includes('obrigado') || message.includes('tchau') || message.includes('adeus') || message.includes('valeu')) {
+        return botResponses.farewell;
+    }
+
+    // Tenta identificar a intenção principal sem palavras-chave rígidas
+    if (message.includes('contato') || message.includes('falar') || message.includes('telefone') || message.includes('whatsapp') || message.includes('email')) {
+        return botResponses.contact;
+    }
+    if (message.includes('devolu') || message.includes('troca')) { // 'devolu' para pegar devolução
+        return botResponses.devolution;
+    }
+    if (message.includes('garantia')) {
+        return botResponses.warranty;
+    }
+    if (message.includes('entrega') || message.includes('frete') || message.includes('envio') || message.includes('custo')) {
+        return botResponses.freight;
+    }
+    if (message.includes('pagamento') || message.includes('parcelar') || message.includes('cartão') || message.includes('pix') || message.includes('boleto')) {
+        return botResponses.payment;
+    }
+    if (message.includes('produto') || message.includes('maquina') || message.includes('catalogo') || message.includes('funciona')) {
+        return botResponses.products;
+    }
+
+    // Se nenhuma intenção clara for encontrada, retorna a mensagem padrão da loja
+    return botResponses.fallback;
 }
 
 // Renderiza a mensagem no chat
@@ -454,7 +462,8 @@ function appendMessage(sender, text) {
 
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message', sender);
-    messageElement.innerHTML = `<span>${text}</span>`;
+    // Para renderizar quebras de linha (\n) corretamente
+    messageElement.innerHTML = `<span>${text.replace(/\n/g, '<br>')}</span>`; 
     chatContainer.appendChild(messageElement);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
@@ -612,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 botToggle.classList.toggle('open');
                 if (botWindow.classList.contains('open')) {
                     setTimeout(() => {
-                        appendMessage('bot', "Olá! 😊 Seja bem-vindo(a) à TEC-LAV! Como posso te ajudar hoje?");
+                        appendMessage('bot', botResponses.welcome);
                     }, 500);
                 }
             });
