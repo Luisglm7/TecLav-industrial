@@ -51,13 +51,13 @@ const cartTotalSpan = document.getElementById('cart-total');
 const cartDrawer = document.getElementById('cart-drawer');
 const toast = document.getElementById('toast');
 
-// Dados de fallback caso a API não funcione - PREÇO ATUALIZADO
+// Dados de fallback caso a API não funcione - ATUALIZADO
 const fallbackProducts = [
     {
         id: 1,
         name: 'Lav SmartClean 2.1',
         description: 'Ideal para indústrias de pequeno a grande porte.',
-        price: 40000.00, // PREÇO ATUALIZADO
+        price: 40000.00,
         image: 'https://via.placeholder.com/300x200?text=Lav+SmartClean+2.1'
     }
 ];
@@ -407,141 +407,66 @@ const chatButton = document.getElementById('chatbot-send-btn');
 const botToggle = document.getElementById('chatbot-toggle');
 const botWindow = document.getElementById('chatbot-window');
 
-// Respostas pré-definidas para o chatbot (conversacional e interativo)
+// Respostas pré-definidas para o chatbot (conversacional)
 const botResponses = {
-    welcome: `💖 Bem-vindo(a) à Tec-Lav Industrial! Sua Parceira em Soluções de Limpeza! ✨\n\nOlá! Que alegria ter você por aqui! Meu nome é Lim e estou aqui para te ajudar com todas as suas dúvidas sobre os nossos produtos e serviços. \n\n${initialOptions}`,
-    contact: "📞 Precisa Falar Conosco?\n\nTelefone de Contato (WhatsApp): **(15) 98658-2311**\n\nE-mail: **contato@teclavindustrial.com.br**",
+    welcome: "💖 Bem-vindo(a) à Tec-Lav Industrial! Sua Parceira em Soluções de Limpeza! ✨\n\nOlá! Que alegria ter você por aqui! Meu nome é Lim e estou aqui para te ajudar com todas as suas dúvidas sobre os nossos produtos e serviços. Na Tec-Lav, nosso maior carinho é a sua satisfação!",
+    contact: "📞 Precisa Falar Conosco?\n\nSeja para tirar dúvidas específicas ou receber um atendimento personalizado, ficaremos muito felizes em conversar com você!\n\nTelefone de Contato (WhatsApp): **(15) 98658-2311**\n\nE-mail: **contato@teclavindustrial.com.br**",
     devolution: "🛡️ Devolução:\n\nVocê tem até **6 (seis) meses de uso** para solicitar a devolução, caso o produto apresente algum defeito de fabricação. Sua tranquilidade é nossa prioridade!",
     warranty: "🛡️ Garantia:\n\nOferecemos uma **garantia completa de 1 (um ano)** contra defeitos de fabricação. Sua tranquilidade é nossa prioridade!",
-    freight: "📦 Entrega e Frete - Entregamos para todo o Brasil!\n\n**Regiões Próximas a Itapeva (SP):** O **frete é por nossa conta!** Totalmente **grátis** para você!\n\n**Outras Regiões (Mais Distantes):** Para envios de longa distância, adicionamos um pequeno valor de **R$ 10,00 a R$ 20,00**, dependendo da proximidade. Este é um valor adicional para garantir que o seu pedido chegue em segurança e o mais rápido possível!",
+    freight: "📦 Entrega e Frete - Entregamos para todo o Brasil!\n\nEnviamos os nossos produtos com todo o cuidado e carinho para qualquer lugar do nosso imenso Brasil!\n\n**Regiões Próximas a Itapeva (SP):** O **frete é por nossa conta!** Totalmente **grátis** para você!\n\n**Outras Regiões (Mais Distantes):** Para envios de longa distância, adicionamos um pequeno valor de **R$ 10,00 a R$ 20,00**, dependendo da proximidade. Este é um valor adicional para garantir que o seu pedido chegue em segurança e o mais rápido possível!",
     payment: "💳 Formas de Pagamento\n\nOferecemos diversas opções para você finalizar sua compra de forma prática:\n\nAceitamos **Boleto Bancário, Cartão de Crédito** e **PIX**.\n\nVocê pode parcelar sua compra no cartão! Oferecemos a opção de dividir o valor para que sua compra caiba no seu bolso.",
     products: "🛍️ Nossos Produtos\n\nPara conhecer todos os nossos produtos e ver as etapas de cada um em detalhes, acesse nossa página de produtos: [Link para Produtos].",
     farewell: "Obrigado por conversar comigo! 😊 Um abraço carinhoso! 💖",
     fallback: "Puxa, que pena! 😔 Essa é uma pergunta muito específica e **infelizmente não posso te ajudar com a resposta agora**. Mas não se preocupe! Você pode entrar em contato diretamente com a nossa equipe, que terá o maior prazer em te atender!\n\nLigue ou chame no WhatsApp: **(15) 98658-2311**\nOu envie um e-mail para: **contato@teclavindustrial.com.br**\n\nFico à disposição para qualquer outra dúvida sobre nossos produtos, entrega, pagamento e garantia! Um abraço carinhoso! 💖"
 };
 
-// Definições de Opções
-const initialOptions = "Para facilitar, clique em um tópico abaixo ou digite sua pergunta:";
-const optionButtons = {
-    CONTACT: "Falar com a Equipe (Contato)",
-    DEVOLUTION: "Política de Devolução",
-    WARRANTY: "Política de Garantia",
-    FREIGHT: "Entrega e Frete",
-    PAYMENT: "Formas de Pagamento",
-    PRODUCTS: "Nossos Produtos",
-    FAREWELL: "Finalizar Conversa"
-};
-
-// Estrutura do formulário de opções
-function getOptionsHtml() {
-    let html = `<div class="bot-options-container">`;
-    for (const key in optionButtons) {
-        html += `<button class="bot-option-btn" data-intent="${key}">${optionButtons[key]}</button>`;
-    }
-    html += `</div>`;
-    return html;
-}
-
-
-// Função que identifica a intenção e retorna o Intent Key (String)
-function getIntent(userMessage) {
+// Função Principal de Resposta do Bot (Mais conversacional)
+function getBotResponse(userMessage) {
     const message = userMessage.toLowerCase();
 
     // Priorize saudações e despedidas
     if (message.includes('olá') || message.includes('oi') || message.includes('bom dia') || message.includes('boa tarde') || message.includes('boa noite')) {
-        return 'WELCOME';
+        return botResponses.welcome;
     }
-    if (message.includes('obrigado') || message.includes('tchau') || message.includes('adeus') || message.includes('valeu') || message.includes('finalizar')) {
-        return 'FAREWELL';
+    if (message.includes('obrigado') || message.includes('tchau') || message.includes('adeus') || message.includes('valeu')) {
+        return botResponses.farewell;
     }
 
     // Tenta identificar a intenção principal sem palavras-chave rígidas
     if (message.includes('contato') || message.includes('falar') || message.includes('telefone') || message.includes('whatsapp') || message.includes('email')) {
-        return 'CONTACT';
+        return botResponses.contact;
     }
     if (message.includes('devolu') || message.includes('troca')) { // 'devolu' para pegar devolução
-        return 'DEVOLUTION';
+        return botResponses.devolution;
     }
-    if (message.includes('garantia') || message.includes('cobre')) {
-        return 'WARRANTY';
+    if (message.includes('garantia')) {
+        return botResponses.warranty;
     }
     if (message.includes('entrega') || message.includes('frete') || message.includes('envio') || message.includes('custo')) {
-        return 'FREIGHT';
+        return botResponses.freight;
     }
     if (message.includes('pagamento') || message.includes('parcelar') || message.includes('cartão') || message.includes('pix') || message.includes('boleto')) {
-        return 'PAYMENT';
+        return botResponses.payment;
     }
     if (message.includes('produto') || message.includes('maquina') || message.includes('catalogo') || message.includes('funciona')) {
-        return 'PRODUCTS';
+        return botResponses.products;
     }
-    
-    return 'FALLBACK';
-}
 
-// Função Principal de Resposta do Bot
-function getBotResponse(userMessage) {
-    const intent = getIntent(userMessage);
-    let responseText = '';
-
-    switch (intent) {
-        case 'WELCOME':
-            responseText = botResponses.welcome;
-            break;
-        case 'FAREWELL':
-            responseText = botResponses.farewell;
-            break;
-        case 'CONTACT':
-            responseText = botResponses.contact;
-            break;
-        case 'DEVOLUTION':
-            responseText = botResponses.devolution;
-            break;
-        case 'WARRANTY':
-            responseText = botResponses.warranty;
-            break;
-        case 'FREIGHT':
-            responseText = botResponses.freight;
-            break;
-        case 'PAYMENT':
-            responseText = botResponses.payment;
-            break;
-        case 'PRODUCTS':
-            responseText = botResponses.products;
-            break;
-        default:
-            responseText = botResponses.fallback;
-    }
-    
-    return responseText;
+    // Se nenhuma intenção clara for encontrada, retorna a mensagem padrão da loja
+    return botResponses.fallback;
 }
 
 // Renderiza a mensagem no chat
-function appendMessage(sender, text, isOptions = false) {
+function appendMessage(sender, text) {
     if (!chatContainer) return;
 
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message', sender);
-    
-    // Se não for o bot, apenas renderiza o texto
-    if (sender === 'user') {
-        messageElement.innerHTML = `<span>${text}</span>`;
-    } 
-    // Se for o bot, renderiza o texto + opções (se não for despedida)
-    else {
-        let content = text.replace(/\n/g, '<br>');
-        
-        // Adiciona as opções interativas, exceto na despedida.
-        if (getIntent(text) !== 'FAREWELL') {
-            content += `<br><br>Gostaria de saber algo mais? ${getOptionsHtml()}`;
-        }
-        
-        messageElement.innerHTML = `<span>${content}</span>`;
-    }
-
+    // Para renderizar quebras de linha (\n) corretamente
+    messageElement.innerHTML = `<span>${text.replace(/\n/g, '<br>')}</span>`; 
     chatContainer.appendChild(messageElement);
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
-
 
 // Processa o envio da mensagem do usuário
 function handleSendMessage() {
@@ -554,11 +479,6 @@ function handleSendMessage() {
     setTimeout(() => {
         const botResponse = getBotResponse(userText);
         appendMessage('bot', botResponse);
-        
-        // Se for despedida, desliga o chatbot
-        if (botResponse === botResponses.farewell) {
-             setTimeout(closeChat, 2500);
-        }
     }, 800);
 }
 
