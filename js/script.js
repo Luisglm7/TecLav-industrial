@@ -399,7 +399,88 @@ function setupFadeInObserver() {
 }
 
 
-// ------------------------------------'
+// --- LÓGICA DO CHATBOT ---
+
+const chatContainer = document.getElementById('chatbot-messages');
+const chatInput = document.getElementById('chatbot-input');
+const chatButton = document.getElementById('chatbot-send-btn');
+const botToggle = document.getElementById('chatbot-toggle');
+const botWindow = document.getElementById('chatbot-window');
+
+// Respostas pré-definidas para o chatbot (conversacional)
+const botResponses = {
+    welcome: "💖 Bem-vindo(a) à Tec-Lav Industrial! Sua Parceira em Soluções de Limpeza! ✨\n\nOlá! Que alegria ter você por aqui! Meu nome é Lim e estou aqui para te ajudar com todas as suas dúvidas sobre os nossos produtos e serviços. Na Tec-Lav, nosso maior carinho é a sua satisfação!",
+    contact: "📞 Precisa Falar Conosco?\n\nSeja para tirar dúvidas específicas ou receber um atendimento personalizado, ficaremos muito felizes em conversar com você!\n\nTelefone de Contato (WhatsApp): **(15) 98658-2311**\n\nE-mail: **contato@teclavindustrial.com.br**",
+    devolution: "🛡️ Devolução:\n\nVocê tem até **6 (seis) meses de uso** para solicitar a devolução, caso o produto apresente algum defeito de fabricação. Sua tranquilidade é nossa prioridade!",
+    warranty: "🛡️ Garantia:\n\nOferecemos uma **garantia completa de 1 (um ano)** contra defeitos de fabricação. Sua tranquilidade é nossa prioridade!",
+    freight: "📦 Entrega e Frete - Entregamos para todo o Brasil!\n\nEnviamos os nossos produtos com todo o cuidado e carinho para qualquer lugar do nosso imenso Brasil!\n\n**Regiões Próximas a Itapeva (SP):** O **frete é por nossa conta!** Totalmente **grátis** para você!\n\n**Outras Regiões (Mais Distantes):** Para envios de longa distância, adicionamos um pequeno valor de **R$ 10,00 a R$ 20,00**, dependendo da proximidade. Este é um valor adicional para garantir que o seu pedido chegue em segurança e o mais rápido possível!",
+    payment: "💳 Formas de Pagamento\n\nOferecemos diversas opções para você finalizar sua compra de forma prática:\n\nAceitamos **Boleto Bancário, Cartão de Crédito** e **PIX**.\n\nVocê pode parcelar sua compra no cartão! Oferecemos a opção de dividir o valor para que sua compra caiba no seu bolso.",
+    products: "🛍️ Nossos Produtos\n\nPara conhecer todos os nossos produtos e ver as etapas de cada um em detalhes, acesse nossa página de produtos: [Link para Produtos].",
+    farewell: "Obrigado por conversar comigo! 😊 Um abraço carinhoso! 💖",
+    fallback: "Puxa, que pena! 😔 Essa é uma pergunta muito específica e **infelizmente não posso te ajudar com a resposta agora**. Mas não se preocupe! Você pode entrar em contato diretamente com a nossa equipe, que terá o maior prazer em te atender!\n\nLigue ou chame no WhatsApp: **(15) 98658-2311**\nOu envie um e-mail para: **contato@teclavindustrial.com.br**\n\nFico à disposição para qualquer outra dúvida sobre nossos produtos, entrega, pagamento e garantia! Um abraço carinhoso! 💖"
+};
+
+// Função Principal de Resposta do Bot (Mais conversacional)
+function getBotResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+
+    // Priorize saudações e despedidas
+    if (message.includes('olá') || message.includes('oi') || message.includes('bom dia') || message.includes('boa tarde') || message.includes('boa noite')) {
+        return botResponses.welcome;
+    }
+    if (message.includes('obrigado') || message.includes('tchau') || message.includes('adeus') || message.includes('valeu')) {
+        return botResponses.farewell;
+    }
+
+    // Tenta identificar a intenção principal sem palavras-chave rígidas
+    if (message.includes('contato') || message.includes('falar') || message.includes('telefone') || message.includes('whatsapp') || message.includes('email')) {
+        return botResponses.contact;
+    }
+    if (message.includes('devolu') || message.includes('troca')) { // 'devolu' para pegar devolução
+        return botResponses.devolution;
+    }
+    if (message.includes('garantia')) {
+        return botResponses.warranty;
+    }
+    if (message.includes('entrega') || message.includes('frete') || message.includes('envio') || message.includes('custo')) {
+        return botResponses.freight;
+    }
+    if (message.includes('pagamento') || message.includes('parcelar') || message.includes('cartão') || message.includes('pix') || message.includes('boleto')) {
+        return botResponses.payment;
+    }
+    if (message.includes('produto') || message.includes('maquina') || message.includes('catalogo') || message.includes('funciona')) {
+        return botResponses.products;
+    }
+
+    // Se nenhuma intenção clara for encontrada, retorna a mensagem padrão da loja
+    return botResponses.fallback;
+}
+
+// Renderiza a mensagem no chat
+function appendMessage(sender, text) {
+    if (!chatContainer) return;
+
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('chat-message', sender);
+    // Para renderizar quebras de linha (\n) corretamente
+    messageElement.innerHTML = `<span>${text.replace(/\n/g, '<br>')}</span>`; 
+    chatContainer.appendChild(messageElement);
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+// Processa o envio da mensagem do usuário
+function handleSendMessage() {
+    const userText = chatInput.value.trim();
+    if (userText === '') return;
+
+    chatInput.value = '';
+    appendMessage('user', userText);
+
+    setTimeout(() => {
+        const botResponse = getBotResponse(userText);
+        appendMessage('bot', botResponse);
+    }, 800);
+}
 
 
 // --- INICIALIZAÇÃO E EVENT LISTENERS GERAIS ---
