@@ -29,6 +29,17 @@
             <p>Por favor, insira a distância ou CEP para calcular o frete e seus dados de pagamento.</p>
 
             <div class="payment-form-container">
+                
+                <h3>Calculadora de Frete </h3>
+                <div class="form-group">
+                    <label for="distance-input">CEP de destino ou Distância (Ex: 01000-000 ou 350)</label>
+                    <input type="text" id="distance-input" placeholder="Insira CEP, Cidade ou Km" required>
+                </div>
+                <button type="button" class="cta-button full-width-button" id="calculate-freight-btn">Calcular Frete</button>
+
+                <p class="total-display">Frete Estimado: <strong id="freight-cost">R$ 0,00</strong></p>
+                
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid rgba(0,0,0,0.1);" />
 
                 <h3>Detalhes do Pagamento</h3>
                 <form id="payment-form">
